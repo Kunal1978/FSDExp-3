@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useUI } from '../contexts/UIContext'
+import { apiService } from '../services/api'
 
 export const ContactForm = () => {
   const { showContactForm } = useUI()
@@ -8,6 +9,8 @@ export const ContactForm = () => {
     email: '',
     message: ''
   })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitStatus, setSubmitStatus] = useState(null)
 
   const handleChange = (e) => {
     setFormData({
@@ -16,13 +19,24 @@ export const ContactForm = () => {
     })
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    // Here you would typically dispatch an action or make an API call
-    console.log('Form submitted:', formData)
-    // Reset form
-    setFormData({ name: '', email: '', message: '' })
-    alert('Message sent successfully!')
+    setIsSubmitting(true)
+    setSubmitStatus(null)
+
+    // Make API call
+    const result = await apiService.submitContactForm(formData)
+
+    setIsSubmitting(false)
+
+    if (result.success) {
+      setSubmitStatus({ type: 'success', message: 'Message sent successfully!' })
+      // Reset form
+      setFormData({ name: '', email: '', message: '' })
+      setTimeout(() => setSubmitStatus(null), 3000)
+    } else {
+      setSubmitStatus({ type: 'error', message: 'Failed to send message. Please try again.' })
+    }
   }
 
   if (!showContactForm) return null
@@ -57,11 +71,21 @@ export const ContactForm = () => {
           className="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-600"
           required
         />
+        {submitStatus && (
+          <div className={`p-3 rounded ${
+            submitStatus.type === 'success' 
+              ? 'bg-green-100 text-green-800' 
+              : 'bg-red-100 text-red-800'
+          }`}>
+            {submitStatus.message}
+          </div>
+        )}
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-3 rounded font-semibold hover:bg-blue-700 transition"
+          disabled={isSubmitting}
+          className="w-full bg-blue-600 text-white py-3 rounded font-semibold hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Send Message
+          {isSubmitting ? 'Sending...' : 'Send Message'}
         </button>
       </form>
     </div>

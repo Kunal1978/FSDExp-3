@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux'
 import { useUI } from './contexts/UIContext'
 import { ContactForm } from './components/ContactForm'
+import { ApiDemo } from './components/ApiDemo'
 
 function App() {
   const { activeSection, showContactForm, scrollToSection, toggleContactForm } = useUI()
@@ -17,6 +18,7 @@ function App() {
             <button onClick={() => scrollToSection('about')} className={`hover:text-blue-600 transition ${activeSection === 'about' ? 'text-blue-600' : 'text-gray-700'}`}>About</button>
             <button onClick={() => scrollToSection('skills')} className={`hover:text-blue-600 transition ${activeSection === 'skills' ? 'text-blue-600' : 'text-gray-700'}`}>Skills</button>
             <button onClick={() => scrollToSection('projects')} className={`hover:text-blue-600 transition ${activeSection === 'projects' ? 'text-blue-600' : 'text-gray-700'}`}>Projects</button>
+            <button onClick={() => scrollToSection('api-demo')} className={`hover:text-blue-600 transition ${activeSection === 'api-demo' ? 'text-blue-600' : 'text-gray-700'}`}>API Demo</button>
             <button onClick={() => scrollToSection('contact')} className={`hover:text-blue-600 transition ${activeSection === 'contact' ? 'text-blue-600' : 'text-gray-700'}`}>Contact</button>
           </div>
         </div>
@@ -114,6 +116,11 @@ function App() {
             ))}
           </div>
         </div>
+      </section>
+
+      {/* API Demo Section */}
+      <section id="api-demo" className="scroll-mt-20">
+        <ApiDemo />
       </section>
 
       {/* Contact Section */}
